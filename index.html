@@ -3,9 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> กี้ให้อุนนะ</title></title>
-    <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+    <title>Be My Fan?</title>
     <style>
+        /* 1. เชื่อมต่อฟอนต์ Diff_X.ttf (ตรวจสอบชื่อไฟล์ให้ตรงกับที่อัปโหลด) */
+        @font-face {
+            font-family: 'DiffX';
+            src: url('Diff_X.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         body {
             margin: 0;
             padding: 0;
@@ -13,135 +20,159 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #ffeaf2; /* ชมพูอ่อนแบบเมโลดี้ */
-            font-family: 'Itim', cursive;
+            background-color: #ffeaf2; /* ชมพูพาสเทลเมโลดี้ */
+            font-family: 'DiffX', sans-serif;
             overflow: hidden;
+            background-image: radial-gradient(#ffc0cb 1px, transparent 1px);
+            background-size: 20px 20px; /* ลายจุดคิ้วท์ๆ */
         }
 
         .container {
             text-align: center;
-            background: white;
-            padding: 40px;
-            border-radius: 30px;
-            box-shadow: 0 10px 25px rgba(255, 182, 193, 0.5);
-            border: 5px solid #ffb6c1;
-            max-width: 400px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 50px 30px;
+            border-radius: 40px;
+            box-shadow: 0 15px 35px rgba(255, 105, 180, 0.2);
+            border: 6px solid #ffb6c1;
+            max-width: 450px;
             width: 90%;
             position: relative;
+            z-index: 10;
         }
 
         .melody-img {
-            width: 150px;
+            width: 180px;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
             margin-bottom: 20px;
         }
 
         h1 {
             color: #ff69b4;
-            font-size: 2rem;
-            margin-bottom: 30px;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 0px #fff;
         }
 
         .btn-group {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            height: 50px;
+            gap: 30px;
+            min-height: 60px;
+            align-items: center;
         }
 
         button {
-            padding: 10px 25px;
-            font-size: 1.2rem;
-            border-radius: 50px;
+            padding: 12px 35px;
+            font-size: 1.5rem;
+            border-radius: 30px;
             border: none;
             cursor: pointer;
-            font-family: 'Itim', cursive;
-            transition: transform 0.2s;
+            font-family: 'DiffX', sans-serif;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         #yesBtn {
             background-color: #ff69b4;
             color: white;
-            box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.1);
+            background-color: #ff1493;
         }
 
         #noBtn {
-            background-color: #ffd1dc;
+            background-color: #ffffff;
             color: #ff69b4;
-            position: absolute; /* จำเป็นสำหรับการขยับหนี */
+            border: 2px solid #ffb6c1;
+            position: absolute; /* สำคัญ: เพื่อให้ขยับหนีได้อิสระ */
         }
 
         /* หน้าจอเมื่อตอบตกลง */
-        #success-message {
+        #success-screen {
             display: none;
         }
 
-        .heart {
-            color: #ff69b4;
-            font-size: 50px;
+        .heart-particle {
+            position: fixed;
+            top: -10%;
+            user-select: none;
+            pointer-events: none;
+            z-index: 1;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(360deg);
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="container" id="main-card">
-        <img src="https://i.pinimg.com/originals/f3/78/84/f3788469956d953609805908f90c1f21.gif" alt="My Melody" class="melody-img">
-        
+        <img src="https://i.pinimg.com/originals/24/00/03/24000302b113063806d2890666065551.gif" alt="My Melody" class="melody-img">
         <h1>อุนเป็นแฟนกับกี้นะ</h1>
         
         <div class="btn-group">
-            <button id="yesBtn" onclick="celebrate()">เป็น</button>
+            <button id="yesBtn" onclick="beMine()">เป็น</button>
             <button id="noBtn" onmouseover="moveButton()">ไม่เป็น</button>
         </div>
     </div>
 
-    <div class="container" id="success-message">
+    <div class="container" id="success-screen">
         <img src="https://media.tenor.com/9v6rO_m4S7UAAAAM/my-melody-sanrio.gif" alt="Happy Melody" class="melody-img">
         <h1>เย้! รักอุนที่สุดเลย 💖</h1>
-        <p>บันทึกไว้แล้วนะว่าเป็นแฟนกัน!</p>
-        <div class="heart">🌸🎀🌸</div>
+        <p style="font-size: 1.2rem; color: #ff69b4;">บันทึกไว้แล้วนะว่าเป็นแฟนกัน!</p>
     </div>
 
     <script>
+        const noBtn = document.getElementById('noBtn');
+        const mainCard = document.getElementById('main-card');
+        const successScreen = document.getElementById('success-screen');
+
+        // ฟังก์ชันทำให้ปุ่มขยับหนี
         function moveButton() {
-            const noBtn = document.getElementById('noBtn');
+            // คำนวณขอบเขตหน้าจอ
+            const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+            const maxY = window.innerHeight - noBtn.offsetHeight - 20;
             
-            // สุ่มตำแหน่งใหม่ภายในหน้าจอ
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            // สุ่มพิกัดใหม่
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
             
-            noBtn.style.left = x + 'px';
-            noBtn.style.top = y + 'px';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
         }
 
-        function celebrate() {
-            document.getElementById('main-card').style.display = 'none';
-            document.getElementById('success-message').style.display = 'block';
-            
-            // เพิ่มลูกเล่น confetti หรืออื่นๆ ได้ที่นี่
-            startHeartRain();
+        // ฟังก์ชันเมื่อกด "เป็น"
+        function beMine() {
+            mainCard.style.display = 'none';
+            successScreen.style.display = 'block';
+            createHearts();
         }
 
-        // ฟังก์ชันเสริม: ทำหัวใจร่วง (Optional)
-        function startHeartRain() {
-            for(let i=0; i<30; i++) {
-                let heart = document.createElement('div');
-                heart.innerHTML = '💗';
-                heart.style.position = 'fixed';
-                heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.top = '-50px';
-                heart.style.fontSize = Math.random() * 20 + 20 + 'px';
-                heart.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
-                document.body.appendChild(heart);
+        // เอฟเฟกต์หัวใจร่วง
+        function createHearts() {
+            const symbols = ['🌸', '💗', '🎀', '✨', '💕'];
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart-particle';
+                    heart.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                    heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    heart.style.opacity = Math.random();
+                    document.body.appendChild(heart);
+                    
+                    // ลบ Element เมื่อร่วงจบ
+                    setTimeout(() => heart.remove(), 5000);
+                }, i * 100);
             }
         }
     </script>
-
-    <style>
-        @keyframes fall {
-            to {
-                transform: translateY(110vh);
-            }
-        }
-    </style>
 </body>
 </html>
